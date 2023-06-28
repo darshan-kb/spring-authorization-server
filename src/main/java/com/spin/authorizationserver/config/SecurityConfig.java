@@ -23,6 +23,8 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
@@ -117,5 +119,14 @@ public class SecurityConfig {
         JWKSet set = new JWKSet(key);
         return new ImmutableJWKSet(set);
     }
+
+    //code for adding custom values in access token
+//    @Bean
+//    public OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer(){
+//        return context -> {
+//            context.getClaims().claim("test", "new claim added");
+//        };
+//    }
+
 
 }

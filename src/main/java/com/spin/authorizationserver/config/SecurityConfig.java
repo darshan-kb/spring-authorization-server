@@ -8,6 +8,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -33,7 +35,9 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 @Configuration
 public class SecurityConfig {
@@ -41,8 +45,11 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-
+        //the authorization request can be customize here
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .authorizationEndpoint(
+                        a -> a.authenticationProviders(getAuthorizationEndpointProviders())
+                )
                 .oidc(Customizer.withDefaults());
 
         http.exceptionHandling(
@@ -52,6 +59,16 @@ public class SecurityConfig {
         );
 
         return http.build();
+    }
+
+    private Consumer<List<AuthenticationProvider>> getAuthorizationEndpointProviders() {
+        return providers -> {
+            for(AuthenticationProvider p : providers){
+                if(p instanceof OAuth2AuthorizationCodeRequestAuthenticationProvider x){
+                    x.setAuthenticationValidator(new CustomRedirectUriValidator());
+                }
+            }
+        };
     }
 
     @Bean

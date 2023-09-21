@@ -21,11 +21,19 @@ public class User {
     private String email;
     private String password;
     private String authority;
+    private boolean isEnabled;
 
     public User(String username, String email, String password, String authority) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.authority = authority;
+    }
+
+    public User(String username, String email){
+        this.username = username;
+        this.email = email;
+        this.authority = "ROLE_USER";
+        isEnabled = false;
     }
 }

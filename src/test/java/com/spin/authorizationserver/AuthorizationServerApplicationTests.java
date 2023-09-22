@@ -28,7 +28,7 @@ class AuthorizationServerApplicationTests {
 	@Test
 	void addUser(){
 		//BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-		User u = new User("Prajwal", bCryptPasswordEncoder.encode("Prajwal1212"),"ROLE_USER");
+		User u = new User("Prajwal","parjwaltarpe@gmail.com", bCryptPasswordEncoder.encode("Prajwal1212"),"ROLE_USER");
 		userRepository.save(u);
 	}
 

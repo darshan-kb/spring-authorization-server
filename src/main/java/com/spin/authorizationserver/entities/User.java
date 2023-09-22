@@ -21,7 +21,7 @@ public class User {
     private String email;
     private String password;
     private String authority;
-    private boolean isEnabled;
+    private boolean enabled;
 
     public User(String username, String email, String password, String authority) {
         this.username = username;
@@ -30,10 +30,11 @@ public class User {
         this.authority = authority;
     }
 
-    public User(String username, String email){
+    public User(String username, String email, String password){
         this.username = username;
         this.email = email;
         this.authority = "ROLE_USER";
-        isEnabled = false;
+        this.password = password;
+        enabled = false;
     }
 }

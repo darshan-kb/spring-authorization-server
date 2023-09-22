@@ -4,7 +4,9 @@ import com.spin.authorizationserver.entities.ConfirmationToken;
 import com.spin.authorizationserver.entities.User;
 import com.spin.authorizationserver.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,10 +14,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+
 public class SignUpService {
+    @Autowired
     UserRepository userRepository;
+    @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
     ConfirmationTokenService confirmationTokenService;
 
 

@@ -2,6 +2,7 @@ package com.spin.authorizationserver.repositories;
 
 import com.spin.authorizationserver.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     Optional<User> findByEmail(String email);
 
     @Transactional
-    @Query("UPDATE User u SET isEnable=true WHERE u.email =:email")
+    @Modifying
+    @Query("UPDATE User u SET enabled=true WHERE u.email =:email")
     int enableUser(String email);
 }

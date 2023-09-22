@@ -20,12 +20,13 @@ public class RegistrationService {
         String token = signUpService.signUpUser(
                 new User(
                         request.getUserName(),
-                        request.getEmail()
+                        request.getEmail(),
+                        request.getPassword()
                 )
         );
         String link ="http://localhost:8080/api/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(),buildEmail(request.getUserName(),link),"Confirm your email");
-        return token;
+        return "Confirmation email send on your email address";
     }
 
     @Transactional

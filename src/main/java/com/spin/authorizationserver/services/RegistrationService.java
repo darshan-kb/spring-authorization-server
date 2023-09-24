@@ -15,6 +15,7 @@ public class RegistrationService {
     private final SignUpService signUpService;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
+    private final UserAccountService userAccountService;
     public String register(RegistrationRequest request){
 
         String token = signUpService.signUpUser(
@@ -45,8 +46,10 @@ public class RegistrationService {
         }
 
         confirmationTokenService.setConfirmedAt(token);
-
-        return signUpService.enableUser(confirmationToken.getUser().getEmail())==1 ? "confirmed" : "couldn't register";
+        String email = confirmationToken.getUser().getEmail();
+        signUpService.enableUser(email);
+        userAccountService.createAccount(email);
+        return "confirmed";
     }
 
 

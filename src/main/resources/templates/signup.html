@@ -12,7 +12,7 @@
     <div class="container">
         <div>
 
-            <form class="form-signin" onsubmit="return false">
+            <form class="form-signin" th:action="@{/api/registration/}" method="post" th:object="${request}">
                 <h2>Sign up form</h2>
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" id="csrf">
                 <div role="alert" id="emailsent">
@@ -21,65 +21,66 @@
                 <p>
                 <div>
                     <label>Username</label>
-                    <input type="text" id="username" name="userName" class="form-control" placeholder="Username"/>
+                    <input type="text" id="username" name="userName" class="form-control" placeholder="Username" th:field="*{userName}"/>
                 </div>
                 </p>
                 <p>
                 <div>
                     <label>Email</label>
-                    <input type="text" id="email" name="email" class="form-control" placeholder="Email"/>
+                    <input type="text" id="email" name="email" class="form-control" placeholder="Email" th:field="*{email}"/>
                 </div>
                 </p>
 
                 <p>
                 <div>
                     <label>Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Password" th:field="*{password}">
                 </div>
                 </p>
 
-                <button type="submit" onclick="sendForm()" class="btn btn-lg btn-primary btn-block" id="submitbutton">Submit</button>
+                <button type="submit"  class="btn btn-lg btn-primary btn-block" id="submitbutton">Submit</button>
             </form>
         </div>
 
     </div>
 
-    <script>
-        function sendForm(){
-            var buttonElement = document.getElementById("submitbutton");
-            buttonElement.disabled = true;
-            var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            let username = document.getElementById("username").value;
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
+<!--    <script>-->
+<!--        onsubmit="return false"   onclick="sendForm()"-->
+<!--        function sendForm(){-->
+<!--            var buttonElement = document.getElementById("submitbutton");-->
+<!--            buttonElement.disabled = true;-->
+<!--            var myHeaders = new Headers();-->
+<!--            myHeaders.append("Content-Type", "application/json");-->
+<!--            let username = document.getElementById("username").value;-->
+<!--            let email = document.getElementById("email").value;-->
+<!--            let password = document.getElementById("password").value;-->
 
 
-            var raw = JSON.stringify({
-              "userName": username,
-              "email": email,
-              "password": password
-            });
+<!--            var raw = JSON.stringify({-->
+<!--              "userName": username,-->
+<!--              "email": email,-->
+<!--              "password": password-->
+<!--            });-->
 
-            var requestOptions = {
-              method: 'POST',
-              headers: myHeaders,
-              body: raw,
-              redirect: 'follow'
-            };
+<!--            var requestOptions = {-->
+<!--              method: 'POST',-->
+<!--              headers: myHeaders,-->
+<!--              body: raw,-->
+<!--              redirect: 'follow'-->
+<!--            };-->
 
-            fetch("http://localhost:8080/api/registration/emailsent", requestOptions)
-              .then(response => response.text())
-              .then((result) => {
+<!--            fetch("http://localhost:8080/api/registration/emailsent", requestOptions)-->
+<!--              .then(response => response.text())-->
+<!--              .then((result) => {-->
 
-                buttonElement.disabled = false;
-                var element = document.getElementById("emailsent");
-                element.classList.add("alert-success");
-                element.innerHTML = result;
+<!--                buttonElement.disabled = false;-->
+<!--                var element = document.getElementById("emailsent");-->
+<!--                element.classList.add("alert-success");-->
+<!--                element.innerHTML = result;-->
 
-              })
-              .catch(error => console.log('error', error));
-        }
-    </script>
+<!--              })-->
+<!--              .catch(error => console.log('error', error));-->
+<!--        }-->
+<!--    </script>-->
     </body>
 </html>

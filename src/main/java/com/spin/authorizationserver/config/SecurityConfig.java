@@ -82,13 +82,10 @@ public class SecurityConfig {
         corsCustomizer.corsCustomizer(http);
         http.formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(req -> {
-                    //req.requestMatchers(HttpMethod.GET,"/api/registration/signup").permitAll();
                     req.requestMatchers("/api/registration/**").permitAll();
-                    //req.requestMatchers(HttpMethod.POST,"/api/registration/emailsent").permitAll();
                     req.anyRequest().authenticated();
                 });
 
-        //http.csrf(c -> c.ignoringRequestMatchers("/api/registration/emailsent"));
         return http.build();
     }
 

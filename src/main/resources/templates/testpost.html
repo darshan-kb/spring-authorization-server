@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>sign up</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+</head>
+<body>
+
+<form class="form-signin" th:action="@{/api/registration}" method="post" th:object="${request}">
+    <h1>Please Sign up</h1>
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"
+        />
+<!--        <div role="alert" id="emailsent" th:class="${status}">-->
+<!--`           <label >"${response}"</label>-->
+<!--        </div>-->
+        <p>
+            <input type="text" id="username" name="userName" class="form-control" placeholder="Username" th:field="*{userName}" />
+        </p>
+        <p>
+            <input type="text" id="email" name="email" class="form-control" placeholder="Email" th:field="*{email}" />
+        </p>
+        <p>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password" th:field="*{password}" />
+        </p>
+
+    <button type="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
+</form>
+</body>
+</html>

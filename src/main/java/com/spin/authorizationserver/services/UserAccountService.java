@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
@@ -24,10 +25,13 @@ public class UserAccountService {
     private String clientname;
     @Value(("${clientpassword}"))
     private String clientpassword;
+    @Value(("${tokenURL}"))
+    private String tokenURL;
 
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional
     public String createAccount(String email){
         UserPayload user = new UserPayload(userRepository.findByEmail(email).get());
         HttpEntity<UserPayload> request = new HttpEntity<>(user);
@@ -40,12 +44,13 @@ public class UserAccountService {
         return "success";
     }
 
+    @Transactional
     public String[] getCsrfAndJsession(String basicAuthEncoded){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization","Basic "+basicAuthEncoded);
         HttpEntity<String> entity = new HttpEntity(headers);
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:7070/hello", HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(tokenURL, HttpMethod.GET, entity, String.class);
         HttpHeaders httpResponse = response.getHeaders();
         String csrfToken = httpResponse.get("CSRF-TOKEN-VALUE").get(0);
         String jsession = httpResponse.get("Set-Cookie").get(0).split(" ")[0];
@@ -59,16 +64,17 @@ public class UserAccountService {
         return response.getBody();
     }
 
+    @Transactional
     public String postRequest(String basicAuth, String csrfToken, String jsession, UserPayload user){
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers2 = new HttpHeaders();
         headers2.set("Authorization","Basic "+basicAuth);
         headers2.set("X-CSRF-TOKEN",csrfToken);
-        headers2.set("Cookie",jsession.substring(0,jsession.length()-1));
+        headers2.set("Cookie",jsession);
         HttpEntity<String> entity2 = new HttpEntity(user ,headers2);
 
         ResponseEntity<String> response2 = restTemplate.exchange(accountcreateURL, HttpMethod.POST, entity2, String.class);
-
+        System.out.println(response2.getBody());
         return response2.getBody();
     }
 }

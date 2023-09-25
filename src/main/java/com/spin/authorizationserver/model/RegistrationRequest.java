@@ -1,14 +1,13 @@
 package com.spin.authorizationserver.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
+@NoArgsConstructor
 public class RegistrationRequest {
     private String userName;
     private String email;

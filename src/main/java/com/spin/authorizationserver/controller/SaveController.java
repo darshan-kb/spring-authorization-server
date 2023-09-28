@@ -27,4 +27,12 @@ public class SaveController {
         model.addAttribute("result",message);
         return "emailcheck";
     }
+
+    @GetMapping("/api/registration/confirm")
+    public String confirm(@RequestParam("token") String token, Model model) {
+        String message = registrationService.confirmToken(token);
+        model.addAttribute("result",message);
+        return "confirm";
+    }
+
 }

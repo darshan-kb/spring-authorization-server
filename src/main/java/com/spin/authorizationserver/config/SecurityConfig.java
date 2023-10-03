@@ -83,6 +83,7 @@ public class SecurityConfig {
         http.formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("/api/registration/**").permitAll();
+                    req.requestMatchers("/api/account/forgotpassword/**").permitAll();
                     req.anyRequest().authenticated();
                 });
 

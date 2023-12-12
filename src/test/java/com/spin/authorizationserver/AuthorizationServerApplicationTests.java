@@ -48,12 +48,16 @@ class AuthorizationServerApplicationTests {
 
 	@Test
 	void addClient(){
+		Client c3 = new Client("slotclient",bCryptPasswordEncoder.encode("secret"),"http://localhost:3006/authorized","openid","client_secret_basic","authorization_code");
+		clientRepository.save(c3);
 		Client c1 = new Client("client",bCryptPasswordEncoder.encode("secret"),"http://localhost:3000/authorized","openid","client_secret_basic","authorization_code");
 		clientRepository.save(c1);
 		Client c2 = new Client("spin-client",bCryptPasswordEncoder.encode("secret"),"http://localhost:9090/authorized","openid","client_secret_basic","client_credentials");
 		clientRepository.save(c2);
 		Client c = new Client("account",bCryptPasswordEncoder.encode("#Big2120"),"http://localhost:7070/authorized","openid","client_secret_basic","client_credentials");
 		clientRepository.save(c);
+		Client c4 = new Client("slotserver",bCryptPasswordEncoder.encode("secret"),"http://localhost:8081/authorized","openid","client_secret_basic","client_credentials");
+		clientRepository.save(c4);
 	}
 
 	@Test

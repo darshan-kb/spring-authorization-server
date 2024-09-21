@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -34,10 +35,15 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
+import java.security.KeyFactory;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -46,6 +52,8 @@ import java.util.function.Consumer;
 @AllArgsConstructor
 public class SecurityConfig {
     private final CORSCustomizer corsCustomizer;
+    @Autowired
+    private AuthServerProperties.AuthProperties authProperties;
     @Bean
     @Order(1)
     public SecurityFilterChain asSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -131,16 +139,27 @@ public class SecurityConfig {
 
     @Bean
     public JWKSource<SecurityContext> jwkSource() throws Exception {
-        KeyPairGenerator kg = KeyPairGenerator.getInstance("RSA");
-        kg.initialize(2048);
-        KeyPair kp = kg.generateKeyPair();
+        String privateKeyPem = authProperties.getPrivateKey();
+        String publicKeyPem = authProperties.getPublicKey();
+        privateKeyPem = privateKeyPem.replaceAll("-----BEGIN PRIVATE KEY-----", "")
+                .replaceAll("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", "");
+        byte[] privatekeyBytes = Base64.getDecoder().decode(privateKeyPem);
+        PKCS8EncodedKeySpec privatekeySpec = new PKCS8EncodedKeySpec(privatekeyBytes);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyFactory.generatePrivate(privatekeySpec);
 
-        RSAPublicKey publicKey = (RSAPublicKey) kp.getPublic();
-        RSAPrivateKey privateKey = (RSAPrivateKey) kp.getPrivate();
+        publicKeyPem = publicKeyPem.replaceAll("-----BEGIN PUBLIC KEY-----", "")
+                .replaceAll("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
+        byte[] publickeyBytes = Base64.getDecoder().decode(publicKeyPem);
+        X509EncodedKeySpec publickeySpec = new X509EncodedKeySpec(publickeyBytes);
+        KeyFactory publickeyFactory = KeyFactory.getInstance("RSA");
+        RSAPublicKey publicKey = (RSAPublicKey) keyFactory.generatePublic(publickeySpec);
 
         RSAKey key = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
+                .keyID(authProperties.getKeyId())
                 .build();
 
         JWKSet set = new JWKSet(key);

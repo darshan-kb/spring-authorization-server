@@ -1,5 +1,7 @@
 package com.spin.authorizationserver.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,7 +9,12 @@ import com.spin.authorizationserver.entities.User;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class SecurityUser implements UserDetails {
     private final User user;
 
@@ -15,8 +22,8 @@ public class SecurityUser implements UserDetails {
         this.user = user;
     }
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.stream(user.getAuthority().split(",")).map(SimpleGrantedAuthority::new).toList();
+    public Set<SimpleGrantedAuthority> getAuthorities() {
+        return Arrays.stream(user.getAuthority().split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     }
 
     @Override

@@ -11,13 +11,16 @@ import java.util.List;
 @Component
 public class CORSCustomizer {
     @Value("${slotclienturi}")
-    String slotClientUri;
+    private String slotClientUri;
+
+    @Value("${gatewayuri}")
+    private String gatewayuri;
     public void corsCustomizer(HttpSecurity http) throws Exception{
         http.cors(c->{
             CorsConfigurationSource source = s ->{
                 CorsConfiguration cc = new CorsConfiguration();
                 cc.setAllowCredentials(true);
-                cc.setAllowedOrigins(List.of("http://localhost:3000",slotClientUri));
+                cc.setAllowedOrigins(List.of("http://localhost:3000",slotClientUri,gatewayuri));
                 cc.setAllowedHeaders(List.of("*"));
                 cc.setAllowedMethods(List.of("*"));
                 return cc;
